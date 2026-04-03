@@ -1,6 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Internet: Google Fonts, futuro RevenueCat/Supabase -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Storage: salvar PDF no celular (Android ≤ 12) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <!-- Galeria: image_picker para logo Pro (Android 13+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <application
-        android:label="recibo_pro"
+        android:label="ReciboPro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

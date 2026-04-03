@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080b12;padding:24px;font-family:'DM Sans',sans-serif}
+h3{color:#6b7280;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px}
+.grid{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.option{display:flex;flex-direction:column;align-items:center;gap:12px}
+.option-label{font-size:12px;color:#6b7280;letter-spacing:0.05em}
+.option-name{font-size:13px;color:#f0ede8;font-weight:500}
+canvas{border-radius:22px}
+</style>
+</head>
+<body>
+<h3>Opções de ícone — ReciboPro</h3>
+<div class="grid" id="grid"></div>
+
+<script>
+const S = 180;
+const GREEN = '#1DB88A';
+const GREEN_D = '#0FA374';
+const WHITE = '#F0EDE8';
+const DARK = '#0F1117';
+const CARD = '#1A1F2E';
+
+function makeCanvas(id) {
+  const c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  c.id = 'c'+id;
+  return c;
+}
+
+function rrect(ctx, x, y, w, h, r, fill, stroke, sw) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h);
+  ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r);
+  ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=sw||1;ctx.stroke();}
+}
+
+function addOption(canvas, name, desc) {
+  const wrap = document.createElement('div');
+  wrap.className = 'option';
+  wrap.innerHTML = `<div class="option-name">${name}</div>`;
+  wrap.appendChild(canvas);
+  wrap.innerHTML += `<div class="option-label">${desc}</div>`;
+  wrap.appendChild(canvas);
+  const d = document.createElement('div');
+  d.className='option-name'; d.textContent=name;
+  const l = document.createElement('div');
+  l.className='option-label'; l.textContent=desc;
+  const w2 = document.createElement('div');
+  w2.className='option';
+  w2.appendChild(d);
+  w2.appendChild(canvas);
+  w2.appendChild(l);
+  document.getElementById('grid').appendChild(w2);
+}
+
+// ── OPÇÃO 1: Documento minimalista ──────────────────────────────────
+{
+  const c = makeCanvas(1);
+  const ctx = c.getContext('2d');
+  // bg
+  rrect(ctx, 0, 0, S, S, 36, DARK);
+  // doc shadow
+  rrect(ctx, 46, 28, 94, 118, 10, '#060810');
+  // doc white
+  rrect(ctx, 42, 24, 94, 118, 10, '#F2F0EB');
+  // green top band
+  rrect(ctx, 42, 24, 94, 38, 10, GREEN);
+  ctx.fillStyle = GREEN;
+  ctx.fillRect(42, 48, 94, 14);
+  // lines
+  ctx.fillStyle = '#D0CCC5';
+  [[52,76,120,8],[52,90,100,8],[52,104,115,8],[52,118,85,8]].forEach(([x,y,w,h])=>{
+    rrect(ctx,x,y,w,h,4,'#D0CCC5');
+  });
+  // R letter on band
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 22px Sora, sans-serif';
+  ctx.fillText('R', 52, 46);
+  addOption(c, 'Opção A', 'Doc minimalista');
+}
+
+// ── OPÇÃO 2: Monograma R bold ────────────────────────────────────────
+{
+  const c = makeCanvas(2);
+  const ctx = c.getContext('2d');
+  rrect(ctx, 0, 0, S, S, 36, GREEN);
+  // inner square
+  rrect(ctx, 28, 28, 124, 124, 20, 'rgba(0,0,0,0.18)');
+  // big R
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 96px Sora, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('R', S/2, S/2+4);
+  // small dot
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.beginPath();
+  ctx.arc(S/2+34, S/2+32, 8, 0, Math.PI*2);
+  ctx.fill();
+  addOption(c, 'Opção B', 'Monograma R');
+}
+
+// ── OPÇÃO 3: Checkmark bold ──────────────────────────────────────────
+{
+  const c = makeCanvas(3);
+  const ctx = c.getContext('2d');
+  // dark bg
+  rrect(ctx, 0, 0, S, S, 36, '#0D1525');
+  // green circle
+  ctx.fillStyle = GREEN;
+  ctx.beginPath();
+  ctx.arc(S/2, S/2-8, 62, 0, Math.PI*2);
+  ctx.fill();
+  // checkmark
+  ctx.strokeStyle = WHITE;
+  ctx.lineWidth = 12;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(S/2-28, S/2-8);
+  ctx.lineTo(S/2-6, S/2+16);
+  ctx.lineTo(S/2+34, S/2-28);
+  ctx.stroke();
+  // word below
+  ctx.fillStyle = GREEN;
+  ctx.font = '700 16px Sora, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('ReciboPro', S/2, S-22);
+  addOption(c, 'Opção C', 'Check circle');
+}
+
+// ── OPÇÃO 4: Doc + check badge ───────────────────────────────────────
+{
+  const c = makeCanvas(4);
+  const ctx = c.getContext('2d');
+  rrect(ctx, 0, 0, S, S, 36, '#0D1525');
+  // doc
+  rrect(ctx, 32, 22, 100, 126, 12, '#F2F0EB');
+  // green header
+  rrect(ctx, 32, 22, 100, 44, 12, GREEN);
+  ctx.fillStyle = GREEN;
+  ctx.fillRect(32, 44, 100, 10);
+  // lines on doc
+  [[42,76,80,9],[42,91,68,9],[42,106,76,9],[42,121,54,9]].forEach(([x,y,w,h])=>{
+    rrect(ctx,x,y,w,h,5,'#CCC9C2');
+  });
+  // badge circle
+  ctx.fillStyle = '#0D1525';
+  ctx.beginPath(); ctx.arc(116, 136, 28, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = GREEN;
+  ctx.beginPath(); ctx.arc(116, 133, 26, 0, Math.PI*2); ctx.fill();
+  // check in badge
+  ctx.strokeStyle = WHITE;
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(104, 133); ctx.lineTo(112, 141); ctx.lineTo(128, 123);
+  ctx.stroke();
+  addOption(c, 'Opção D', 'Doc + badge check');
+}
+
+// ── OPÇÃO 5: Split diagonal ──────────────────────────────────────────
+{
+  const c = makeCanvas(5);
+  const ctx = c.getContext('2d');
+  rrect(ctx, 0, 0, S, S, 36, DARK);
+  // clip to rounded rect
+  ctx.save();
+  rrect(ctx, 0, 0, S, S, 36);
+  ctx.clip();
+  // green diagonal half
+  ctx.fillStyle = GREEN;
+  ctx.beginPath();
+  ctx.moveTo(0, 0); ctx.lineTo(S, 0); ctx.lineTo(0, S);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+  // doc centered
+  rrect(ctx, 38, 32, 104, 126, 12, WHITE);
+  // header
+  rrect(ctx, 38, 32, 104, 42, 12, '#0FA374');
+  ctx.fillStyle = '#0FA374';
+  ctx.fillRect(38, 56, 104, 10);
+  // R on header
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 20px Sora, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('RP', 48, 54);
+  // lines
+  [[48,78,84,9],[48,93,66,9],[48,108,80,9],[48,123,52,9]].forEach(([x,y,w,h])=>{
+    rrect(ctx,x,y,w,h,5,'#CCC9C2');
+  });
+  addOption(c, 'Opção E', 'Diagonal split');
+}
+
+// ── OPÇÃO 6: Wordmark clean ──────────────────────────────────────────
+{
+  const c = makeCanvas(6);
+  const ctx = c.getContext('2d');
+  rrect(ctx, 0, 0, S, S, 36, GREEN);
+  // white doc shape (small)
+  rrect(ctx, 54, 28, 72, 88, 8, 'rgba(255,255,255,0.15)');
+  rrect(ctx, 54, 28, 72, 88, 8, null, 'rgba(255,255,255,0.3)', 1.5);
+  // lines on mini doc
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  [[62,52,46,6],[62,63,36,6],[62,74,42,6],[62,85,28,6]].forEach(([x,y,w,h])=>{
+    rrect(ctx,x,y,w,h,3,'rgba(255,255,255,0.45)');
+  });
+  // wordmark
+  ctx.fillStyle = WHITE;
+  ctx.font = '800 18px Sora, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Recibo', S/2, 138);
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.font = '700 14px Sora, sans-serif';
+  ctx.fillText('PRO', S/2, 156);
+  addOption(c, 'Opção F', 'Verde + doc glass');
+}
+
+// ── OPÇÃO 7: Letra P estilizada ──────────────────────────────────────
+{
+  const c = makeCanvas(7);
+  const ctx = c.getContext('2d');
+  rrect(ctx, 0, 0, S, S, 36, '#0D1525');
+  // big stylized document icon
+  // doc body
+  rrect(ctx, 42, 20, 96, 120, 14, CARD);
+  // folded corner
+  ctx.fillStyle = '#131928';
+  ctx.beginPath();
+  ctx.moveTo(115, 20); ctx.lineTo(138, 20); ctx.lineTo(138, 43);
+  ctx.closePath(); ctx.fill();
+  rrect(ctx, 115, 20, 23, 23, 0, null, '#1e2540', 1);
+  // green accent bar left
+  rrect(ctx, 42, 20, 8, 120, 4, GREEN);
+  // lines
+  [[58,44,62,9],[58,59,72,9],[58,74,52,9],[58,89,68,9],[58,104,44,9]].forEach(([x,y,w,h])=>{
+    rrect(ctx,x,y,w,h,5,'#2a3050');
+  });
+  // bottom text
+  ctx.fillStyle = GREEN;
+  ctx.font = '700 13px Sora, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('ReciboPro', S/2, 158);
+  addOption(c, 'Opção G', 'Doc card escuro');
+}
+
+// ── OPÇÃO 8: Ícone R + checkmark integrado ───────────────────────────
+{
+  const c = makeCanvas(8);
+  const ctx = c.getContext('2d');
+  // gradient-like bg: two-tone
+  rrect(ctx, 0, 0, S, S, 36, '#0A1628');
+  // circle bg
+  ctx.fillStyle = '#111d35';
+  ctx.beginPath(); ctx.arc(S/2, S/2-10, 70, 0, Math.PI*2); ctx.fill();
+  // green ring
+  ctx.strokeStyle = GREEN;
+  ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.arc(S/2, S/2-10, 62, 0, Math.PI*2); ctx.stroke();
+  // big R
+  ctx.fillStyle = WHITE;
+  ctx.font = '800 72px Sora, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('R', S/2, S/2-10);
+  // small check badge bottom right of circle
+  ctx.fillStyle = GREEN;
+  ctx.beginPath(); ctx.arc(S/2+46, S/2+42, 18, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = WHITE;
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(S/2+37, S/2+42);
+  ctx.lineTo(S/2+44, S/2+50);
+  ctx.lineTo(S/2+56, S/2+33);
+  ctx.stroke();
+  // label
+  ctx.fillStyle = '#4b5563';
+  ctx.font = '500 11px DM Sans, sans-serif';
+  ctx.fillText('ReciboPro', S/2, S-18);
+  addOption(c, 'Opção H', 'R + ring + badge');
+}
+</script>
+</body>
+</html>
